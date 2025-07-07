@@ -88,7 +88,7 @@
     const outputArea = document.getElementById('outputArea');
     const images = [];
     const existingFilenames = new Set();
-    const githubBase = "https://lilsnacc99.github.io/gallery-builder/images/"; // change this to your actual GitHub Pages image path
+    const githubBase = "https://lilsnacc99.github.io/gallery-builder/images/";
 
     dropZone.addEventListener('dragover', e => {
       e.preventDefault();
@@ -108,7 +108,7 @@
         const baseName = name.replace(/\.[^/.]+$/, "");
 
         if (existingFilenames.has(name)) {
-          alert(`Warning: File \"${name}\" has already been added.`);
+          alert(`Warning: File "${name}" has already been added.`);
           continue;
         }
 
@@ -117,7 +117,8 @@
         const entry = {
           url: githubBase + encodeURIComponent(name),
           title: baseName,
-          tags: []
+          tags: [],
+          price: ""
         };
 
         images.push(entry);
@@ -132,6 +133,7 @@
         <img src="${entry.url}" alt="preview">
         <input type="text" placeholder="Title" value="${entry.title}" onchange="updateTitle(this, ${index})">
         <input type="text" placeholder="Tags (comma-separated)" onchange="updateTags(this, ${index})">
+        <input type="text" placeholder="Price (e.g., $20)" onchange="updatePrice(this, ${index})">
       `;
       imageList.appendChild(div);
     }
@@ -145,8 +147,12 @@
       images[index].tags = tags;
     }
 
+    function updatePrice(input, index) {
+      images[index].price = input.value.trim();
+    }
+
     function generateCode() {
-      const output = 'const files = [\n' + images.map(img => `  {\n    url: "${img.url}",\n    title: "${img.title}",\n    tags: [${img.tags.map(t => `\"${t}\"`).join(', ')}]\n  }`).join(',\n') + '\n];';
+      const output = 'const files = [\n' + images.map(img => `  {\n    url: "${img.url}",\n    title: "${img.title}",\n    tags: [${img.tags.map(t => `\"${t}\"`).join(', ')}],\n    price: "${img.price}"\n  }`).join(',\n') + '\n];';
       outputArea.value = output;
     }
   </script>
